@@ -16,7 +16,7 @@
                 <v-card-text>
                   <v-card-title primary-title>
                     <v-flex 
-                      v-if="!isLoading && beer != null">
+                      v-if="beer != null">
                         <div>
                           <v-img :src="beer.image_url" height="200px" contain/>
                           <br>
@@ -34,12 +34,12 @@
               
                 <v-card-actions>
                   <v-spacer/>
-                  <v-btn small color="green" @click="snackbar = true" v-on:click="addToCart(beer)" dark>Adicionar</v-btn>
-                  <v-btn small color="blue" @click.native="$router.go(-1)">Voltar</v-btn>
+                  <v-btn small color="green" @click="snackbar = true" v-on:click="actAddToChart(beer)" dark>Adicionar</v-btn>
+                  <v-btn small color="blue" @click.native="$router.go(-1)" dark>Voltar</v-btn>
                 </v-card-actions>
 
                 <v-snackbar v-model="snackbar" :timeout=1500>
-                  Cerveja adicionada ao carrinho de compras!
+                  {{msgAddCart}}
                   <v-btn
                     color="green"
                     flat
@@ -57,7 +57,7 @@
 
 <script>
 import axios from "axios";
-import store from "@/store/cart.js";
+import { mapGetters,mapActions } from "vuex";
 
 export default {
   mounted() {
@@ -71,10 +71,13 @@ export default {
       snackbar: false
     };
   },
+  computed: {
+    ...mapGetters(['msgAddCart'])
+  },
   methods: {
-    addToCart(beer) {
-      store.commit("addToCart", beer);
-    }
+    ...mapActions({
+      actAddToChart: 'actAddToChart',
+    })
   }
 };
 </script>

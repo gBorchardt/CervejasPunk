@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist'
+import axios from "axios"
 
 const vuexPersist = new VuexPersist({
   key: 'cervejapunk',
@@ -15,10 +16,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     beers: [],
+    products: [],
     quantity: 0,
   },
   mutations: {
-    addToCart(state, beer) {
+    mutAddToCart(state, beer) {
 
       let index = findIndex(state.beers, (o) => o.id == beer.id)
 
@@ -33,7 +35,6 @@ export default new Vuex.Store({
       } else {
         state.beers[index].quantity++;
       }
-
     },
     removeToCart(state, beer){
 
@@ -48,6 +49,9 @@ export default new Vuex.Store({
       } else {
         state.beers[index].quantity--;
       }
+    },
+    setBeers(state, products){
+      state.products = products
     }
   },
   getters: {
@@ -57,10 +61,40 @@ export default new Vuex.Store({
         qtd += Number(state.beers[x].quantity);
       }
       return qtd;
+    },
+    msgAddCart(){
+      return "Cerveja adicionada ao carrinho de compras."
+    },
+    beerList: state => {
+      return state.beers;
     }
   },
   actions: {
-
+    fetchBeers({
+      commit
+    }) {
+        axios
+          .get("https://api.punkapi.com/v2/beers?brewed_before=11-2012&abv_gt=6")
+          .then(response => {
+            let results = response.data
+            commit('setBeers', results)
+          });
+    },
+    filterBeers({
+      commit
+      }, value) {
+        axios
+        .get("https://api.punkapi.com/v2/beers?ibu_gt=" + value)
+        .then(response => {
+          let results = response.data
+          commit('setBeers', results)
+        });      
+    },
+    actAddToChart({
+      commit
+    }, beer) {
+      commit('mutAddToCart', beer)
+    }
   },
   plugins: [vuexPersist.plugin]
 })

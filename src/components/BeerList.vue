@@ -21,7 +21,7 @@
         <!-- Laço com os dados de cervejas -->
         <!-- Notem que usamos a id devido ao object observer -->
         <v-flex 
-          v-for="beer in beers" 
+          v-for="beer in products" 
           :key="beer.id" xs4>
             <!-- Passamos a prop com a nossa cerveja específica para ser renderizada no card. -->
             <BeerCard :beer="beer" />
@@ -32,20 +32,14 @@
 </template>
 
 <script>
-import axios from "axios";
+
 // Como padrão, importamos nosso componente de card.
 import BeerCard from "../components/BeerCard.vue";
+import { mapState, mapGetter, mapActions } from "vuex";
 
 export default {
-  mounted() {
-    axios
-      .get("https://api.punkapi.com/v2/beers?brewed_before=11-2012&abv_gt=6")
-      .then(response => (this.beers = response.data, this.beersInit = response.data));
-  },
   data() {
     return {
-      beersInit: [],
-      beers: [],
       selectedValue: null,
       categories: [
         {
@@ -82,17 +76,29 @@ export default {
   watch: {
     selectedValue(newValue) {
       if(newValue == "0") {
-        this.beers = this.beersInit;
+        this.fetchBeers();
       } else {
-        // Iterate through axios.get()
-        axios
-          .get("https://api.punkapi.com/v2/beers?ibu_gt=" + newValue)
-          .then(response => (this.beers = response.data));
+        this.filterBeers(newValue);
       }
     }
   },
   components: {
     BeerCard
+  },
+  computed: {
+    ...mapState({
+      products: state => state.products
+    })
+  },
+  methods: {
+    ...mapActions({
+      fetchBeers: 'fetchBeers',
+      filterBeers: 'filterBeers'
+    })
+  },
+
+  created(){
+    this.fetchBeers();
   }
 };
 </script>

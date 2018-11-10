@@ -3,7 +3,7 @@
     <v-subheader inset>Carrinho de Compras</v-subheader>
 
     <v-list-tile
-        v-for="beer in beers"
+        v-for="beer in beerList"
         :key="beer.id"
         avatar
       >
@@ -18,7 +18,7 @@
 
       <v-list-tile-action> 
         <v-btn icon ripple>
-          <v-icon color="green lighten-1" v-on:click="addQtd(beer)">add</v-icon>
+          <v-icon color="green lighten-1" v-on:click="actAddToChart(beer)">add</v-icon>
         </v-btn>
         <v-btn icon ripple>
           <v-icon color="red lighten-1" v-on:click="removeQtd(beer)">remove</v-icon>
@@ -73,12 +73,10 @@
 
 <script>
 import store from "@/store/cart.js";
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   computed: {
-    beers() {
-      return store.state.beers;
-    },
     valbeers() {
       let soma = 0;
       for (let x = 0; x < store.state.beers.length; x++) {
@@ -91,16 +89,13 @@ export default {
         return soma;
       }
     },
-    qtdbeers() {
-      return store.getters.qtdbeers;
-    }
+
+    ...mapGetters(['qtdbeers', 'beerList'])
+    
   },
   methods: {
     removeToCart(beer) {
       store.commit("removeToCart", beer);
-    },
-    addQtd(beer){
-      store.commit("addToCart", beer);
     },
     removeQtd(beer){
       store.commit("removeQtd", beer);
@@ -112,7 +107,11 @@ export default {
         minimumFractionDigits: 2
       });
       return formatter.format(value);
-    }
+    },
+    
+    ...mapActions({
+      actAddToChart: 'actAddToChart',
+    })
   }
 };
 </script>

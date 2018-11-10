@@ -19,12 +19,12 @@
     </v-card-title>
 
     <v-card-actions>
-      <v-btn small color="green" @click="snackbar = true" v-on:click="addToCart(beer)" dark>Adicionar</v-btn>
+      <v-btn small color="green" @click="snackbar = true" v-on:click="actAddToChart(beer)" dark>Adicionar</v-btn>
       <v-btn flat color="blue" @click.native="$router.push('/details/' + beer.name)">Detalhes</v-btn>
     </v-card-actions>
 
     <v-snackbar v-model="snackbar" :timeout=2000>
-      Cerveja adicionada ao carrinho!
+      {{ msgAddCart }}
       <v-btn
         color="green"
         flat
@@ -37,22 +37,26 @@
 </template>
 
 <script>
-import store from "@/store/cart.js";
+import {mapGetters, mapActions } from "vuex";
 
 export default {
   //Recebendo a prop beer
   props: {
-    beer: String
+    beer: Object
   },
   data() {
     return {
       snackbar: false
     };
   },
+  computed: {
+
+    ...mapGetters(['msgAddCart'])
+  },
   methods: {
-    addToCart(beer) {
-      store.commit("addToCart", beer);
-    }
+    ...mapActions({
+      actAddToChart: 'actAddToChart',
+    })
   }
 };
 </script>
