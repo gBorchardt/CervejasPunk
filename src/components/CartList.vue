@@ -6,7 +6,6 @@
         v-for="beer in beers"
         :key="beer.id"
         avatar
-        @click=""
       >
 
       <v-list-tile-avatar>
@@ -41,30 +40,30 @@
 
     <div class="checkout">
 
-      <v-list-tile v-if="this.qtdbeers > 0">
-        <v-list-tile-content>
-          <v-list-tile-title>Itens no Carrinho: {{ qtdbeers }}</v-list-tile-title>
-
+      <v-list-tile 
+        v-if="this.qtdbeers > 0">
+          <v-list-tile-content>
+            <v-list-tile-title>Itens no Carrinho: {{ qtdbeers }}</v-list-tile-title>
               <v-list-tile-sub-title v-if="qtdbeers < 10">
-                  Total: {{ formatTotal(valbeers) }}
+                Total: {{ formatTotal(valbeers) }}
               </v-list-tile-sub-title>
               <v-list-tile-sub-title v-else>
-                  Total:
-                  <span class="original_price">
-                    {{ formatTotal(valbeers) }}
+                Total:
+                <span class="original_price">
+                  {{ formatTotal(valbeers) }}
                   </span>
                   <span class="red--text">
                     {{ formatTotal((valbeers) - valbeers * 0.1) }} (10% Off)
                   </span>
               </v-list-tile-sub-title>
-
-        </v-list-tile-content>
+          </v-list-tile-content>
       </v-list-tile>
 
-      <center v-if="this.qtdbeers > 0">
-        <v-btn color="light-green" @click.native="$router.push('/checkout')">
-          Finalizar Compra
-        </v-btn>
+      <center 
+        v-if="this.qtdbeers > 0">
+          <v-btn color="light-green" @click.native="$router.push('/checkout')">
+            Finalizar Compra
+          </v-btn>
       </center>
     </div>
 
@@ -79,13 +78,6 @@ export default {
   computed: {
     beers() {
       return store.state.beers;
-    },
-    valbeers() {
-      if(store.getters.qtdbeers >= 10) {
-        return (store.getters.valbeers) - store.getters.valbeers * 0.1;
-      } else {
-        return store.getters.valbeers;
-      }
     },
     valbeers() {
       let soma = 0;

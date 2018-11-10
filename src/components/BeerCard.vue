@@ -41,7 +41,9 @@ import store from "@/store/cart.js";
 
 export default {
   //Recebendo a prop beer
-  props: ["beer"],
+  props: {
+    beer: String
+  },
   data() {
     return {
       snackbar: false
